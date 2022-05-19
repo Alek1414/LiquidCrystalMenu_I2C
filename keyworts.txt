@@ -1,0 +1,12 @@
+# Syntax Coloring Map For RotaryEncoder
+
+# Datatypes, Classes (KEYWORD1)
+RotaryEncoder KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+check KEYWORD2
+clk_isr KEYWORD2
+
+# Structures (KEYWORD2)
+
+# Constants (LITERAL1)
