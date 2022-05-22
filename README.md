@@ -1,11 +1,8 @@
-# ********* Under construction ***********
-
-
 # Liquid Crystal Menu through I2C
 
-Contains a class to define and control a menu for a Liquid Crystal display through I2C.
+Contains a class to parametrize and control a menu for a Liquid Crystal display through I2C.
 After initializing the object `DisplayMenu` with its parameters, the `begin` method must be called once to start the display.
-After this, a call to the `action` method must be done cyclicaly in a loop.
+Then, a call to the `action` method must be done cyclically in a loop.
 This method is used to traverse the menu with a cursor and edit parameters given the action passed as an argument.
 This action must be present for one cycle only to take effect.
 The possible actions are defined in the `eMenuAction` enumeration.
@@ -25,16 +22,16 @@ DisplayMenu(byte address,
             byte data_size);
 ```
 
-* `address`: The I2C address of the display (normally 0x27)
+* `address`: The I2C address of the display (default: 0x27)
 * `max_characters`: The number of characters in one row of the display
 * `max_rows`: The number of rows of the display
 * `display_data`: Pointer to an array of type `sRowData`
-* `data_size`: Lenght of the `display_data` array
+* `data_size`: Length of the `display_data` array
 
 ## The `sRowData` structure
 
 Depending on which type of row is defined only the relevant parameters must be set in the variable of `sRowData` type.
-The parameters not used need to be initializes as a `nullptr`.
+The parameters not used need to be initialized as a `nullptr`.
 The reason for this is to save memory space.
 
 ```cpp
@@ -51,14 +48,14 @@ struct sRowData
 
 * `type`: Type of row defined in the `eRowType` enumeration
 * `start_text`: Text at the beginning of the row. Needed for al type of rows
-* `number`: Structure containing the neccesary information when using a type of row with a number
-* `list`: Structure containing the neccesary information when using a type of row with a list
+* `number`: Structure containing the necessary information when using a type of row with a number
+* `list`: Structure containing the necessary information when using a type of row with a list
 * `event`: Function to be called by a type of row with an event
-* `extended`: Structure containing the neccesary information when using a type of row with an extended event
+* `extended`: Structure containing the necessary information when using a type of row with an extended event
 
 ### The `sNumber` structure
 
-This structure is necerary when using a type of row with a number.
+This structure is necessary when using a type of row with a number.
 
 ```cpp
 struct sNumber
@@ -75,13 +72,13 @@ struct sNumber
 * `number`: Pointer to the number variable shown and/or edited
 * `end`: Text shown after the number
 * `decimals`: Number of decimals shown of the number
-* `increments`: Increments/Decrements step of the number
+* `increments`: Increment/Decrement step of the number
 * `max`: Maximum limit of the number
 * `min`: Minimum limit of the number
 
 ### The `sList` structure
 
-This structure is necerary when using a type of row with a list.
+This structure is necessary when using a type of row with a list.
 
 ```cpp
 struct sList
@@ -92,13 +89,13 @@ struct sList
 };
 ```
 
-* `list`: Array containing the text of each item in the list
+* `list`: Array containing the text of each element in the list
 * `size`: Size of the list
-* `item`: Pointer to the variable pointing to the selected item
+* `element`: Pointer to the variable pointing to the selected element
 
 ### The `sExtended` structure
 
-This structure is necerary when using a type of row with an extended mode.
+This structure is necessary when using a type of row with an extended mode.
 
 ```cpp
 struct sExtended
@@ -167,40 +164,40 @@ enum eRowType
 
 ### The `NONE` row type
 
-For this row type the needed parameters in `sRowData` are `type` and `start_text`. A `nullptr` must be asigned to the rest of the parameters. While moving the cursor up or down (`UP` and `DOWN` actions), and while in `BROWSE` mode, this row is skipped.
+For this row type the needed parameters in `sRowData` are `type` and `start_text`. A `nullptr` must be assigned to the rest of the parameters. While moving the cursor up or down (`UP` and `DOWN` actions) and while in `BROWSE` mode, this row is skipped.
 
 ### The `NUMBER` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `number`. A `nullptr` must be asigned to the rest of the parameters. When entering `EDIT` mode (`CHANGE_MODE` action), while standing on this row, the number starts to blink with a defined time. Now the value can be edited with the `UP` and `DOWN` actions. The variable with the number is only updated with the new value after leaving the `EDIT`mode (`CHANGE_MODE` action).
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `number`. A `nullptr` must be assigned to the rest of the parameters. When entering `EDIT` mode (`CHANGE_MODE` action) and while standing on this row, the number starts to blink with a defined interval. Now the value can be edited with the `UP` and `DOWN` actions. The variable with the number is only updated with the new value after leaving the `EDIT` mode (`CHANGE_MODE` action).
 
 ### The `LIST` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `list`. A `nullptr` must be asigned to the rest of the parameters. When entering `EDIT` mode (`CHANGE_MODE` action), while standing on this row, the element starts to blink with a defined time. Now the element can be changed with the `UP` and `DOWN` actions. The variable which points to the element is only updated with the new value after leaving the `EDIT`mode (`CHANGE_MODE` action).
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `list`. A `nullptr` must be assigned to the rest of the parameters. When entering `EDIT` mode (`CHANGE_MODE` action) and while standing on this row, the element starts to blink with a defined interval. Now the element can be changed with the `UP` and `DOWN` actions. The variable which points to the element is only updated with the new value after leaving the `EDIT` mode (`CHANGE_MODE` action).
 
 ### The `EVENT` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `event`. A `nullptr` must be asigned to the rest of the parameters. While standing on this row the event is executed given the `CHANGE_MODE` action.
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `event`. A `nullptr` must be assigned to the rest of the parameters. While standing on this row the event is executed given the `CHANGE_MODE` action.
 
 ### The `SHOW_NUMBER` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `number`. A `nullptr` must be asigned to the rest of the parameters. No action can be performed on this row type. It only updates the actual value of the number variable with a defined interval.
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `number`. A `nullptr` must be assigned to the rest of the parameters. No action can be performed on this row type. It only updates the actual value of the number variable with a defined interval.
 
 ### The `SHOW_LIST` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `list`. A `nullptr` must be asigned to the rest of the parameters. No action can be performed on this row type. It only updates the actual element pointed by the pointer variable with a defined interval.
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `list`. A `nullptr` must be assigned to the rest of the parameters. No action can be performed on this row type. It only updates the actual element pointed by the pointer variable with a defined interval.
 
 ### The `NUMBER_EVENT` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text`, `number` and `event`. A `nullptr` must be asigned to the rest of the parameters. It has the same behaiviour as `NUMBER` but additionally, when leaving the `EDIT` mode (`CHANGE_MODE` action), an event is executed.
+For this row type the needed parameters in `sRowData` are `type`, `start_text`, `number` and `event`. A `nullptr` must be assigned to the rest of the parameters. It has the same behavior as `NUMBER` but additionally, when leaving the `EDIT` mode (`CHANGE_MODE` action), an event is executed.
 
 ### The `LIST_EVENT` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text`, `list` and `event`. A `nullptr` must be asigned to the rest of the parameters.
-It has the same behaiviour as `LIST` but additionally, when leaving the `EDIT` mode (`CHANGE_MODE` action), an event is executed. 
+For this row type the needed parameters in `sRowData` are `type`, `start_text`, `list` and `event`. A `nullptr` must be assigned to the rest of the parameters.
+It has the same behavior as `LIST` but additionally, when leaving the `EDIT` mode (`CHANGE_MODE` action), an event is executed. 
 
 ### The `NUMBER_EXTENDED_EVENT` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text`, `number`, `event` and `extended`. A `nullptr` must be asigned to the rest of the parameters. It has the same behaiviour as `NUMBER_EVENT` but additionally with the `EXTENDED` action the status is changed and an event is executed.
+For this row type the needed parameters in `sRowData` are `type`, `start_text`, `number`, `event` and `extended`. A `nullptr` must be assigned to the rest of the parameters. It has the same behavior as `NUMBER_EVENT` but additionally with the `EXTENDED` action the status is changed and an event is executed.
 
 ## Methods of the `DisplayMenu` object
 
@@ -222,7 +219,7 @@ void action(eMenuAction action, bool active);
 
 ### The `update_row` method
 
-Sometimes it is necesary to change a value of a row and to refresh the complete row the `update_row` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
+Sometimes it is necessary to change the parameters of a row and to refresh the complete row the `update_row` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
 
 ```cpp
 void update_row(byte pos);
@@ -230,15 +227,15 @@ void update_row(byte pos);
 
 ### The `update_value` method
 
-Sometimes it is necesary to change the value (number or list) of a row and to refresh this value the `update_row` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
+Sometimes it is necessary to change the value (number or list) of a row and to refresh this value the `update_value` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
 
 ```cpp
 void update_value(byte pos);
 ```
 
-Sometimes it is necesary to change the extended value of a row and to refresh this the `update_row` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
-
 ### The `update_extended` method
+
+Sometimes it is necessary to change the extended value of a row and to refresh this the `update_extended` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
 
 ```cpp
 void update_extended(byte pos);
@@ -246,7 +243,7 @@ void update_extended(byte pos);
 
 ## Timing definitions
 
-The interval time of the blink and show functionalitys are defined by some definitions. This definitions can be redifined if necesary.
+The interval time of the blink and show functionalities are defined by some definitions. These definitions can be redefined if necessary.
 
 Example of redefinition of the timings (here with default values):
 ```cpp
