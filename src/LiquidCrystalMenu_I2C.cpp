@@ -10,7 +10,7 @@ DisplayMenu::DisplayMenu(byte address, byte max_characters, byte max_rows, sRowD
     this->display_data = display_data;
     this->data_size = data_size;
 
-    if(display_data[0].type == NONE) this->cursor_pos = 1;
+    if(display_data[0].type == RT_NONE) this->cursor_pos = 1;
     else this->cursor_pos = 0;
     this->rows_pos = 0;
 
@@ -41,11 +41,11 @@ void DisplayMenu::action(eMenuAction action, bool active)
     {
         switch(action)
         {
-            case DA_UP:
+            case MA_UP:
                 switch(this->display_status)
                 {
                     case BROWSE:
-                        if((this->cursor_pos == 1 && display_data[0].type == NONE) || this->cursor_pos == 0)
+                        if((this->cursor_pos == 1 && display_data[0].type == RT_NONE) || this->cursor_pos == 0)
                         {
                             this->cursor_pos = this->data_size - 1;
                             if(this->data_size > this->max_rows)
@@ -61,7 +61,7 @@ void DisplayMenu::action(eMenuAction action, bool active)
                             this->cursor_pos--;
                             if(this->rows_pos - this->cursor_pos == 1)
                             {
-                                if(this->cursor_pos == 1 && display_data[0].type == NONE) this->rows_pos = 0;
+                                if(this->cursor_pos == 1 && display_data[0].type == RT_NONE) this->rows_pos = 0;
                                 else this->rows_pos--;
                                 this->_update_rows();
                             }
@@ -72,15 +72,16 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         this->update_value_flag = true;
                         switch(this->display_data[this->cursor_pos].type)
                         {
-                            case NUMBER:
-                            case NUMBER_EVENT:
-                            case NUMBER_EXTENDED_EVENT:
+                            case RT_NUMBER:
+                            case RT_NUMBER_EVENT:
+                            case RT_NUMBER_EXTENDED_EVENT:
                                 this->number_temp += this->display_data[this->cursor_pos].number->increments;
                                 if(this->number_temp > this->display_data[this->cursor_pos].number->max)
                                     this->number_temp = this->display_data[this->cursor_pos].number->max;
                                 break;
-                            case LIST:
-                            case LIST_EVENT:
+                            case RT_LIST:
+                            case RT_LIST_EVENT:
+                            case RT_LIST_EXTENDED_EVENT:
                                 if(this->list_pos_temp == this->display_data[this->cursor_pos].list->size-1)
                                     this->list_pos_temp = 0;
                                 else
@@ -90,13 +91,13 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         break;
                 }
                 break;
-            case DA_DOWN:
+            case MA_DOWN:
                 switch(this->display_status)
                 {
                     case BROWSE:
                         if(this->cursor_pos == this->data_size - 1)
                         {
-                            if(display_data[0].type == NONE) this->cursor_pos = 1;
+                            if(display_data[0].type == RT_NONE) this->cursor_pos = 1;
                             else this->cursor_pos = 0;
                             this->rows_pos = 0;
                             this->_update_cursor();
@@ -118,15 +119,16 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         this->update_value_flag = true;
                         switch(this->display_data[this->cursor_pos].type)
                         {
-                            case NUMBER:
-                            case NUMBER_EVENT:
-                            case NUMBER_EXTENDED_EVENT:
+                            case RT_NUMBER:
+                            case RT_NUMBER_EVENT:
+                            case RT_NUMBER_EXTENDED_EVENT:
                                 this->number_temp -= this->display_data[this->cursor_pos].number->increments;
                                 if(this->number_temp < this->display_data[this->cursor_pos].number->min)
                                     this->number_temp = this->display_data[this->cursor_pos].number->min;
                                 break;
-                            case LIST:
-                            case LIST_EVENT:
+                            case RT_LIST:
+                            case RT_LIST_EVENT:
+                            case RT_LIST_EXTENDED_EVENT:
                                 if(this->list_pos_temp == 0)
                                     this->list_pos_temp = this->display_data[this->cursor_pos].list->size-1;
                                 else
@@ -136,26 +138,27 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         break;
                 }
                 break;
-            case DA_CHANGE_MODE:
+            case MA_CHANGE_MODE:
                 switch(this->display_status)
                 {
                     case BROWSE:
                         switch(this->display_data[this->cursor_pos].type)
                         {
-                            case NUMBER:
-                            case NUMBER_EVENT:
-                            case NUMBER_EXTENDED_EVENT:
+                            case RT_NUMBER:
+                            case RT_NUMBER_EVENT:
+                            case RT_NUMBER_EXTENDED_EVENT:
                                 this->display_status = EDIT;
                                 this->number_temp = *this->display_data[this->cursor_pos].number->number;
                                 this->blink_active = true;
                                 break;
-                            case LIST:
-                            case LIST_EVENT:
+                            case RT_LIST:
+                            case RT_LIST_EVENT:
+                            case RT_LIST_EXTENDED_EVENT:
                                 this->display_status = EDIT;
-                                this->list_pos_temp = *this->display_data[this->cursor_pos].list->item;
+                                this->list_pos_temp = *this->display_data[this->cursor_pos].list->element;
                                 this->blink_active = true;
                                 break;
-                            case EVENT:
+                            case RT_EVENT:
                                 this->display_data[this->cursor_pos].event(this->cursor_pos);
                                 break;
                         }
@@ -165,45 +168,49 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         this->update_value_flag = true;
                         switch(this->display_data[this->cursor_pos].type)
                         {
-                            case NUMBER:
-                            case NUMBER_EVENT:
-                            case NUMBER_EXTENDED_EVENT:
+                            case RT_NUMBER:
+                            case RT_NUMBER_EVENT:
+                            case RT_NUMBER_EXTENDED_EVENT:
                                 *this->display_data[this->cursor_pos].number->number = this->number_temp;
                                 this->blink_active = false;
                                 this->blink_status = false;
-                            case LIST:
-                            case LIST_EVENT:
-                                *this->display_data[this->cursor_pos].list->item = this->list_pos_temp;
+                            case RT_LIST:
+                            case RT_LIST_EVENT:
+                            case RT_LIST_EXTENDED_EVENT:
+                                *this->display_data[this->cursor_pos].list->element = this->list_pos_temp;
                                 this->blink_active = false;
                                 this->blink_status = false;
                         }
                         switch(this->display_data[this->cursor_pos].type)
                         {  
-                            case NUMBER_EVENT:
-                            case NUMBER_EXTENDED_EVENT:
-                            case LIST_EVENT:
+                            case RT_NUMBER_EVENT:
+                            case RT_LIST_EVENT:
+                            case RT_NUMBER_EXTENDED_EVENT:
+                            case RT_LIST_EXTENDED_EVENT:
                                 this->display_data[this->cursor_pos].event(this->cursor_pos);
                         }
                         break;
                 }
                 break;
-            case DA_EXTENDED:
+            case MA_EXTENDED:
                 if(this->display_status == BROWSE)
                 {
                     switch(this->display_data[this->cursor_pos].type)
                     {
-                        case NUMBER_EXTENDED_EVENT:
+                        case RT_NUMBER_EXTENDED_EVENT:
+                        case RT_LIST_EXTENDED_EVENT:
                             *this->display_data[this->cursor_pos].extended->status = !*this->display_data[this->cursor_pos].extended->status;
                             update_extended(this->cursor_pos);
                             _clean_row(this->cursor_pos);
                             this->display_data[this->cursor_pos].extended->event(this->cursor_pos);
+                            break;
                     }
                 }
         }
 
         if(this->blink_active)
         {
-            if(millis() - this->blink_last > BLINK_DURATION)
+            if(millis() - this->blink_last > BLINK_INTERVAL)
             {
                 this->blink_last = millis();
                 this->blink_status = !this->blink_status;
@@ -211,12 +218,12 @@ void DisplayMenu::action(eMenuAction action, bool active)
             }
         }
 
-        if(millis() - this->show_last > SHOW_TIME_UPDATE)
+        if(millis() - this->show_last > SHOW_TIME_INTERVAL)
         {
             this->show_last = millis();
             for(int i = this->rows_pos ; i < this->rows_pos + this->max_rows ; i++)
             {
-                if(this->display_data[i].type == SHOW_NUMBER || this->display_data[i].type == SHOW_LIST)
+                if(this->display_data[i].type == RT_SHOW_NUMBER || this->display_data[i].type == RT_SHOW_LIST)
                 {
                     if(this->display_data[i].event != 0)
                         this->display_data[i].event(this->cursor_pos);
@@ -294,10 +301,10 @@ void DisplayMenu::_update_value(byte pos_data)
     (*this->lcd).setCursor(start_lenght+1, pos_data - this->rows_pos);
     switch(this->display_data[pos_data].type)
     {
-        case NUMBER:
-        case SHOW_NUMBER:
-        case NUMBER_EVENT:
-        case NUMBER_EXTENDED_EVENT:
+        case RT_NUMBER:
+        case RT_SHOW_NUMBER:
+        case RT_NUMBER_EVENT:
+        case RT_NUMBER_EXTENDED_EVENT:
             if(this->temporal_value) value = String(this->number_temp, this->display_data[pos_data].number->decimals);
             else value = String(*this->display_data[pos_data].number->number, this->display_data[pos_data].number->decimals);
             if(value[0] == ' ') value = String(value[1]);
@@ -312,11 +319,12 @@ void DisplayMenu::_update_value(byte pos_data)
                     (*this->lcd).print(" ");
             }
             break;
-        case LIST:
-        case SHOW_LIST:
-        case LIST_EVENT:
+        case RT_LIST:
+        case RT_SHOW_LIST:
+        case RT_LIST_EVENT:
+        case RT_LIST_EXTENDED_EVENT:
             if(this->temporal_value) value = this->display_data[pos_data].list->list[this->list_pos_temp];
-            else value = this->display_data[pos_data].list->list[*this->display_data[pos_data].list->item];
+            else value = this->display_data[pos_data].list->list[*this->display_data[pos_data].list->element];
             if(this->show_value)
             {
                 (*this->lcd).print(value);
@@ -338,7 +346,8 @@ void DisplayMenu::_update_extended(byte pos_data)
     {
         switch(this->display_data[pos_data].type)
         {
-            case NUMBER_EXTENDED_EVENT:
+            case RT_NUMBER_EXTENDED_EVENT:
+            case RT_LIST_EXTENDED_EVENT:
                 (*this->lcd).setCursor(this->max_characters-1, pos_data - this->rows_pos);
                 (*this->lcd).rightToLeft();
                 if(*this->display_data[pos_data].extended->status) value = this->display_data[pos_data].extended->true_text;
@@ -360,38 +369,40 @@ void DisplayMenu::_clean_row(byte pos_data)
 
     switch(this->display_data[pos_data].type)
     {
-        case NUMBER:
-        case SHOW_NUMBER:
-        case NUMBER_EVENT:
-        case NUMBER_EXTENDED_EVENT:
+        case RT_NUMBER:
+        case RT_SHOW_NUMBER:
+        case RT_NUMBER_EVENT:
+        case RT_NUMBER_EXTENDED_EVENT:
             if(this->temporal_value) aux_str = String(this->number_temp, this->display_data[pos_data].number->decimals);
             else aux_str = String(*this->display_data[pos_data].number->number, this->display_data[pos_data].number->decimals);
             if(aux_str[0] == ' ') aux_str = String(aux_str[1]);
             start += aux_str.length();
             start += strlen(this->display_data[pos_data].number->end);
             break;
-        case LIST:
-        case SHOW_LIST:
-        case LIST_EVENT:
+        case RT_LIST:
+        case RT_SHOW_LIST:
+        case RT_LIST_EVENT:
+        case RT_LIST_EXTENDED_EVENT:
             if(this->temporal_value) start += strlen(this->display_data[pos_data].list->list[this->list_pos_temp]);
-            else start += strlen(this->display_data[pos_data].list->list[*this->display_data[pos_data].list->item]);
+            else start += strlen(this->display_data[pos_data].list->list[*this->display_data[pos_data].list->element]);
             break;
     }
 
     switch(this->display_data[pos_data].type)
     {
-        case NUMBER_EXTENDED_EVENT:
+        case RT_NUMBER_EXTENDED_EVENT:
+        case RT_LIST_EXTENDED_EVENT:
             if(*this->display_data[pos_data].extended->status) end = this->max_characters - strlen(this->display_data[pos_data].extended->true_text);
             else end = this->max_characters - strlen(this->display_data[pos_data].extended->false_text);
             break;
-        case NONE:
-        case NUMBER:
-        case SHOW_NUMBER:
-        case NUMBER_EVENT:
-        case LIST:
-        case SHOW_LIST:
-        case LIST_EVENT:
-        case EVENT:
+        case RT_NONE:
+        case RT_NUMBER:
+        case RT_SHOW_NUMBER:
+        case RT_NUMBER_EVENT:
+        case RT_LIST:
+        case RT_SHOW_LIST:
+        case RT_LIST_EVENT:
+        case RT_EVENT:
             end = this->max_characters;
             break;
     }

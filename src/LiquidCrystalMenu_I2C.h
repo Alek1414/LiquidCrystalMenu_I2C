@@ -14,36 +14,37 @@
   lcd.print("\xF4"); // gibt ein Ω aus
 */
 
-#ifndef BLINK_DURATION
-#define BLINK_DURATION 500 // [ms] In 'EDIT' mode the number or list item blinks with this interval
+#ifndef BLINK_INTERVAL
+#define BLINK_INTERVAL 500 // [ms] In 'EDIT' mode the number or list item blinks with this interval
 #endif
 
-#ifndef SHOW_TIME_UPDATE
-#define SHOW_TIME_UPDATE 200 // [ms] Update interval for each row with show data type
+#ifndef SHOW_TIME_INTERVAL
+#define SHOW_TIME_INTERVAL 200 // [ms] Update interval for each row with show data type
 #endif
 
 // Enumeration with navigation actions of the menu. The action is active with on cycle
 enum eMenuAction
 {
-    DA_NONE = 0, // No action is performed
-    DA_UP, // In BROWSE mode move cursor up. In EDIT mode increment number or select next item on a list 
-    DA_DOWN, // In BROWSE mode move cursor down. In EDIT mode decrement number or select last item on a list 
-    DA_CHANGE_MODE, // In BROWSE mode enter EDIT mode or execute event. In EDIT mode exit EDIT mode
-    DA_EXTENDED // In BROWSE mode execute extended event
+    MA_NONE=0, // No action is performed
+    MA_UP, // In BROWSE mode move cursor up. In EDIT mode increment number or select next element on a list 
+    MA_DOWN, // In BROWSE mode move cursor down. In EDIT mode decrement number or select last element on a list 
+    MA_CHANGE_MODE, // In BROWSE mode enter EDIT mode or execute event. In EDIT mode return to BROWSE mode
+    MA_EXTENDED // In BROWSE mode execute extended event
 };
 
 // Enumeration with the type of data shown in a row
 enum eRowType
 {
-    NONE=0, // Shows text
-    NUMBER, // Shows text and number with unit which can be edited
-    LIST, // Shows text and text from a list where the selected item of the list can be changed
-    EVENT, // Shows only text. Additionally a function is called with 'DA_CHANGE_MODE' action
-    SHOW_NUMBER, // Shows text and a number which is updated with a defined time
-    SHOW_LIST, // Shows text and text from a list which is updated  with a defined time
-    NUMBER_EVENT, // Same functionality as NUMBER but a function is called after editing the number
-    LIST_EVENT, // Same functionality as LIST but a function is called after changing the selected item
-    NUMBER_EXTENDED_EVENT, // Same functionality as NUMBER_EVENT but with 'DA_PRESS_LONG' an additional function is called
+    RT_NONE=0, // Shows text
+    RT_NUMBER, // Shows text and number with unit which can be edited
+    RT_LIST, // Shows text and text from a list where the selected element of the list can be changed
+    RT_EVENT, // Shows only text. Additionally a function is called with 'MA_CHANGE_MODE' action
+    RT_SHOW_NUMBER, // Shows text and a number which is updated with a defined time
+    RT_SHOW_LIST, // Shows text and text from a list which is updated  with a defined time
+    RT_NUMBER_EVENT, // Same functionality as RT_NUMBER but a function is called after editing the number
+    RT_LIST_EVENT, // Same functionality as RT_LIST but a function is called after changing the selected element
+    RT_NUMBER_EXTENDED_EVENT, // Same functionality as RT_NUMBER_EVENT but with 'DA_PRESS_LONG' an additional function is called
+    RT_LIST_EXTENDED_EVENT // Same functionality as RT_LIST_EVENT but with 'DA_PRESS_LONG' an additional function is called
 };
 
 // Structur with the relevant data when using a row type with a number
@@ -53,7 +54,7 @@ struct sNumber
     float* number; // Pointer to the number variable
     const char* end; // Text shown after the number
     byte decimals; // The number of decimals shown of the number
-    float increments; // In 'EDIT' mode it is the increment/decrement in the number of every 'DA_UP'/'DA_DOWN' action. In show row type it is ignored
+    float increments; // In 'EDIT' mode it is the increment/decrement in the number of every 'MA_UP'/'MA_DOWN' action. In show row type it is ignored
     float max; // After the number reaches this value it is not incremented any more. In show row type it is ignored
     float min; // After the number reaches this value it is not decremented any more. In show row type it is ignored
 };
@@ -62,19 +63,19 @@ struct sNumber
 // This structure must be assigned to the 'sDisplayData' structure
 struct sList
 {
-    const char** list; // Array containing the text of each item in the list
+    const char** list; // Array containing the text of each element in the list
     byte size; // Size of the list
-    byte* item; // Pointer to the variable containing the selected item
+    byte* element; // Pointer to the variable containing the selected element
 };
 
 // Structur with the relevant data when using a row type with an extended event
 // This structure must be assigned to the 'sDisplayData' structure
 struct sExtended
 {
-    bool* status;
+    bool* status; // 'status' changes it's value when ussing the 'MA_EXTENDED' action
     const char* true_text; // Text shown at the end of the row, right adjusted, after the number and it's ending
     const char* false_text; // Text shown at the end of the row, right adjusted, after the number and it's ending
-    void (*event)(byte data_pos); // Function to be called by the row types with an extended event when 'DA_EXTENDED' action is active
+    void (*event)(byte data_pos); // Function to be called by the row types with an extended event when 'MA_EXTENDED' action is active
 };
 
 // Structure containing the neccesary information for a row in the display menu

@@ -114,24 +114,24 @@ struct sExtended
 
 ## The `eMenuAction` enumeration
 
-What the actions, passed in the `action` method, allow is to change to/from `BROWSE` mode, `EDIT` mode, increment or decrement a number, select another item from a list or execute normal events or extended events.
+The actions, passed in the `action` method, allow to change to/from `BROWSE` mode, `EDIT` mode, increment and decrement a number, select another item from a list or execute normal events and extended events.
 
 ```cpp
 enum eMenuAction
 {
-    NONE = 0,
-    UP,
-    DOWN,
-    CHANGE_MODE,
-    EXTENDED
+    MA_NONE = 0,
+    MA_UP,
+    MA_DOWN,
+    MA_CHANGE_MODE,
+    MA_EXTENDED
 };
 ```
 
-* `NONE`: No change is performed. It must be passed continuously when no other action is sended
-* `UP`: in `BROWSE` mode it moves the cursor up. In `EDIT` mode it increments the number or selects the next item on a list
-* `DOWN`: in `BROWSE` mode it moves the cursor down. In `EDIT` mode it decrements the number or selects the previous item on a list
-* `CHANGE_MODE`: in `BROWSE` mode it enters in `EDIT` mode or executes event. In `EDIT` mode it returns to `BROWSE` mode
-* `EXTENDED`: in `BROWSE` mode it executes extended event
+* `MA_NONE`: No change is performed. It must be passed continuously when no other action is sended
+* `MA_UP`: in `BROWSE` mode it moves the cursor up. In `EDIT` mode it increments the number or selects the next item on a list
+* `MA_DOWN`: in `BROWSE` mode it moves the cursor down. In `EDIT` mode it decrements the number or selects the previous item on a list
+* `MA_CHANGE_MODE`: in `BROWSE` mode it enters in `EDIT` mode or executes event. In `EDIT` mode it returns to `BROWSE` mode
+* `MA_EXTENDED`: in `BROWSE` mode it executes extended event
 
 ## The `eRowType` enumeration
 
@@ -140,64 +140,93 @@ The types of rows that can be shown in the display are defined in the enumeratio
 ```cpp
 enum eRowType
 {
-    NONE=0,
-    NUMBER,
-    LIST,
-    EVENT,
-    SHOW_NUMBER,
-    SHOW_LIST,
-    NUMBER_EVENT,
-    LIST_EVENT,
-    NUMBER_EXTENDED_EVENT
+    RT_NONE=0,
+    RT_NUMBER,
+    RT_LIST,
+    RT_EVENT,
+    RT_SHOW_NUMBER,
+    RT_SHOW_LIST,
+    RT_NUMBER_EVENT,
+    RT_LIST_EVENT,
+    RT_NUMBER_EXTENDED_EVENT,
+    RT_LIST_EXTENDED_EVENT
 };
 ```
 
-* `NONE`: Shows only text
-* `NUMBER`: Shows text and number which can be edited
-* `LIST`: Shows text and element from list where the selected element of the list can be changed
-* `EVENT`: Shows only text and an event can be executed
-* `SHOW_NUMBER`: Shows text and a number which is updated with a defined time
-* `SHOW_LIST`: Shows text and element from a list which is updated with a defined time
-* `NUMBER_EVENT`: Same functionality as `NUMBER` but an event is executed after editing the number
-* `LIST_EVENT`: Same functionality as `LIST` but an event is executed after changing the element
-* `NUMBER_EXTENDED_EVENT`: Same functionality as `NUMBER_EVENT` but with extended mode
+* `RT_NONE`: Shows only text
+* `RT_NUMBER`: Shows text and number which can be edited
+* `RT_LIST`: Shows text and element from list where the selected element of the list can be changed
+* `RT_EVENT`: Shows only text and an event can be executed
+* `RT_SHOW_NUMBER`: Shows text and a number which is updated with a defined time
+* `RT_SHOW_LIST`: Shows text and element from a list which is updated with a defined time
+* `RT_NUMBER_EVENT`: Same functionality as `RT_NUMBER` but an event is executed after editing the number
+* `RT_LIST_EVENT`: Same functionality as `RT_LIST` but an event is executed after changing the element
+* `RT_NUMBER_EXTENDED_EVENT`: Same functionality as `RT_NUMBER_EVENT` but with extended mode
+* `RT_LIST_EXTENDED_EVENT`: Same functionality as `RT_LIST_EVENT` but with extended mode
 
-### The `NONE` row type
+### The `RT_NONE` row type
 
-For this row type the needed parameters in `sRowData` are `type` and `start_text`. A `nullptr` must be assigned to the rest of the parameters. While moving the cursor up or down (`UP` and `DOWN` actions) and while in `BROWSE` mode, this row is skipped.
+For this row type the needed parameters in `sRowData` are `type` and `start_text`.
+A `nullptr` must be assigned to the rest of the parameters.
+While moving the cursor up or down (`MA_UP` and `MA_DOWN` actions) and while in `BROWSE` mode, this row is skipped.
 
-### The `NUMBER` row type
+### The `RT_NUMBER` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `number`. A `nullptr` must be assigned to the rest of the parameters. When entering `EDIT` mode (`CHANGE_MODE` action) and while standing on this row, the number starts to blink with a defined interval. Now the value can be edited with the `UP` and `DOWN` actions. The variable with the number is only updated with the new value after leaving the `EDIT` mode (`CHANGE_MODE` action).
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `number`.
+A `nullptr` must be assigned to the rest of the parameters.
+When entering `EDIT` mode (`MA_CHANGE_MODE` action) and while standing on this row, the number starts to blink with a defined interval.
+Now the value can be edited with the `MA_UP` and `MA_DOWN` actions.
+The variable with the number is only updated with the new value after leaving the `EDIT` mode (`MA_CHANGE_MODE` action).
 
-### The `LIST` row type
+### The `RT_LIST` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `list`. A `nullptr` must be assigned to the rest of the parameters. When entering `EDIT` mode (`CHANGE_MODE` action) and while standing on this row, the element starts to blink with a defined interval. Now the element can be changed with the `UP` and `DOWN` actions. The variable which points to the element is only updated with the new value after leaving the `EDIT` mode (`CHANGE_MODE` action).
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `list`.
+A `nullptr` must be assigned to the rest of the parameters.
+When entering `EDIT` mode (`MA_CHANGE_MODE` action) and while standing on this row, the element starts to blink with a defined interval.
+Now the element can be changed with the `MA_UP` and `MA_DOWN` actions.
+The variable which points to the element is only updated with the new value after leaving the `EDIT` mode (`MA_CHANGE_MODE` action).
 
-### The `EVENT` row type
+### The `RT_EVENT` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `event`. A `nullptr` must be assigned to the rest of the parameters. While standing on this row the event is executed given the `CHANGE_MODE` action.
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `event`.
+A `nullptr` must be assigned to the rest of the parameters.
+While standing on this row the event is executed given the `MA_CHANGE_MODE` action.
 
-### The `SHOW_NUMBER` row type
+### The `RT_SHOW_NUMBER` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `number`. A `nullptr` must be assigned to the rest of the parameters. No action can be performed on this row type. It only updates the actual value of the number variable with a defined interval.
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `number`.
+A `nullptr` must be assigned to the rest of the parameters. No action can be performed on this row type.
+It only updates the actual value of the number variable with a defined interval.
 
-### The `SHOW_LIST` row type
+### The `RT_SHOW_LIST` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text` and `list`. A `nullptr` must be assigned to the rest of the parameters. No action can be performed on this row type. It only updates the actual element pointed by the pointer variable with a defined interval.
+For this row type the needed parameters in `sRowData` are `type`, `start_text` and `list`.
+A `nullptr` must be assigned to the rest of the parameters. No action can be performed on this row type.
+It only updates the actual element pointed by the pointer variable with a defined interval.
 
-### The `NUMBER_EVENT` row type
+### The `RT_NUMBER_EVENT` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text`, `number` and `event`. A `nullptr` must be assigned to the rest of the parameters. It has the same behavior as `NUMBER` but additionally, when leaving the `EDIT` mode (`CHANGE_MODE` action), an event is executed.
+For this row type the needed parameters in `sRowData` are `type`, `start_text`, `number` and `event`.
+A `nullptr` must be assigned to the rest of the parameters.
+It has the same behavior as `RT_NUMBER` but additionally, when leaving the `EDIT` mode (`MA_CHANGE_MODE` action), an event is executed.
 
-### The `LIST_EVENT` row type
+### The `RT_LIST_EVENT` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text`, `list` and `event`. A `nullptr` must be assigned to the rest of the parameters.
-It has the same behavior as `LIST` but additionally, when leaving the `EDIT` mode (`CHANGE_MODE` action), an event is executed. 
+For this row type the needed parameters in `sRowData` are `type`, `start_text`, `list` and `event`.
+A `nullptr` must be assigned to the rest of the parameters.
+It has the same behavior as `RT_LIST` but additionally, when leaving the `EDIT` mode (`MA_CHANGE_MODE` action), an event is executed. 
 
-### The `NUMBER_EXTENDED_EVENT` row type
+### The `RT_NUMBER_EXTENDED_EVENT` row type
 
-For this row type the needed parameters in `sRowData` are `type`, `start_text`, `number`, `event` and `extended`. A `nullptr` must be assigned to the rest of the parameters. It has the same behavior as `NUMBER_EVENT` but additionally with the `EXTENDED` action the status is changed and an event is executed.
+For this row type the needed parameters in `sRowData` are `type`, `start_text`, `number`, `event` and `extended`.
+A `nullptr` must be assigned to the rest of the parameters.
+It has the same behavior as `RT_NUMBER_EVENT` but additionally with the `MA_EXTENDED` action the status is changed and an event is executed.
+
+### The `RT_LIST_EXTENDED_EVENT` row type
+
+For this row type the needed parameters in `sRowData` are `type`, `start_text`, `list`, `event` and `extended`.
+A `nullptr` must be assigned to the rest of the parameters.
+It has the same behavior as `RT_LIST_EVENT` but additionally with the `MA_EXTENDED` action the status is changed and an event is executed.
 
 ## Methods of the `DisplayMenu` object
 
@@ -211,7 +240,10 @@ void begin(void);
 
 ### The `action` method
 
-This method must be called cyclically in a loop. It is responsible for managing the display menu. Two arguments need to be passed. The action needs to be passed for one cycle only to take effect. If no action is present, then the `NONE` action must be passed constantly. The `active` argument must be true for the action to take place. It is used when using two menus objects on the same display.
+This method must be called cyclically in a loop. It is responsible for managing the display menu.
+Two arguments need to be passed. The action needs to be passed for one cycle only to take effect.
+If no action is present, then the `MA_NONE` action must be passed constantly.
+The `active` argument must be true for the action to take place. It is used when using two menus objects on the same display.
 
 ```cpp
 void action(eMenuAction action, bool active);
@@ -219,7 +251,8 @@ void action(eMenuAction action, bool active);
 
 ### The `update_row` method
 
-Sometimes it is necessary to change the parameters of a row and to refresh the complete row the `update_row` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
+Sometimes it is necessary to change the parameters of a row and to refresh the complete row the `update_row` method can be called.
+As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
 
 ```cpp
 void update_row(byte pos);
@@ -227,7 +260,8 @@ void update_row(byte pos);
 
 ### The `update_value` method
 
-Sometimes it is necessary to change the value (number or list) of a row and to refresh this value the `update_value` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
+Sometimes it is necessary to change the value (number or list) of a row and to refresh this value the `update_value` method can be called.
+As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
 
 ```cpp
 void update_value(byte pos);
@@ -235,7 +269,8 @@ void update_value(byte pos);
 
 ### The `update_extended` method
 
-Sometimes it is necessary to change the extended value of a row and to refresh this the `update_extended` method can be called. As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
+Sometimes it is necessary to change the extended value of a row and to refresh this the `update_extended` method can be called.
+As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
 
 ```cpp
 void update_extended(byte pos);
@@ -243,7 +278,8 @@ void update_extended(byte pos);
 
 ## Timing definitions
 
-The interval time of the blink and show functionalities are defined by some definitions. These definitions can be redefined if necessary.
+The interval time of the blink and show functionalities are defined by some definitions.
+These definitions can be redefined if necessary.
 
 Example of redefinition of the timings (here with default values):
 ```cpp
