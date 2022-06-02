@@ -103,8 +103,6 @@ class DisplayMenu
         void action(eMenuAction action); // Sets changes in the menu with the given action
         void update_rows();
         void update_row(byte pos);
-        void update_value(byte pos);
-        void update_extended(byte pos);
         void reset_position();
     private:
         enum eDisplayStatus

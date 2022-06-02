@@ -252,18 +252,6 @@ void DisplayMenu::_update_cursor()
     }
 }
 
-void DisplayMenu::update_value(byte pos_data)
-{
-    this->_update_value(pos_data);
-    this->_clean_row(pos_data);
-}
-
-void DisplayMenu::update_extended(byte pos_data)
-{
-    this->_update_extended(pos_data);
-    this->_clean_row(pos_data);
-}
-
 void DisplayMenu::update_row(byte pos_data)
 {
     if(pos_data >= this->rows_pos && pos_data <= this->rows_pos + this->max_rows)
