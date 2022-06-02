@@ -1,7 +1,7 @@
 # Liquid Crystal Menu through I2C
 
 Contains a class to parametrize and control a menu for a Liquid Crystal display through I2C.
-After initializing the object `DisplayMenu` with its parameters, the `begin` method must be called once to start the display.
+After initializing the object `DisplayMenu` with its parameters, the `begin` and `update_rows` methods must be called once to start the display.
 Then, a call to the `action` method must be done cyclically in a loop.
 This method is used to traverse the menu with a cursor and edit parameters given the action passed as an argument.
 This action must be present for one cycle only to take effect.
@@ -243,10 +243,17 @@ void begin(void);
 This method must be called cyclically in a loop. It is responsible for managing the display menu.
 Two arguments need to be passed. The action needs to be passed for one cycle only to take effect.
 If no action is present, then the `MA_NONE` action must be passed constantly.
-The `active` argument must be true for the action to take place. It is used when using two menus objects on the same display.
 
 ```cpp
-void action(eMenuAction action, bool active);
+void action(eMenuAction action);
+```
+
+### The `update_rows` method
+
+This method refreshes all the rows of the display menu.
+
+```cpp
+void update_rows();
 ```
 
 ### The `update_row` method
@@ -274,6 +281,15 @@ As argument the position of the row to be updated must passed (the position in t
 
 ```cpp
 void update_extended(byte pos);
+```
+
+### The `reset_position` method
+
+This method resets the position of the cursor and rows to the original values.
+This can be used when working with multiple menus.
+
+```cpp
+void reset_position();
 ```
 
 ## Timing definitions
