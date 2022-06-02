@@ -265,24 +265,6 @@ As argument the position of the row to be updated must passed (the position in t
 void update_row(byte pos);
 ```
 
-### The `update_value` method
-
-Sometimes it is necessary to change the value (number or list) of a row and to refresh this value the `update_value` method can be called.
-As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
-
-```cpp
-void update_value(byte pos);
-```
-
-### The `update_extended` method
-
-Sometimes it is necessary to change the extended value of a row and to refresh this the `update_extended` method can be called.
-As argument the position of the row to be updated must passed (the position in the array passed in the initialization of the object).
-
-```cpp
-void update_extended(byte pos);
-```
-
 ### The `reset_position` method
 
 This method resets the position of the cursor and rows to the original values.
