@@ -57,7 +57,6 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         }
                         else
                         {
-                            Serial.println(this->cursor_pos);
                             this->cursor_pos--;
                             if(this->rows_pos - this->cursor_pos == 1)
                             {
@@ -166,20 +165,21 @@ void DisplayMenu::action(eMenuAction action, bool active)
                     case EDIT:
                         this->display_status = BROWSE;
                         this->update_value_flag = true;
+                        this->blink_active = false;
+                        this->blink_status = false;
                         switch(this->display_data[this->cursor_pos].type)
                         {
                             case RT_NUMBER:
                             case RT_NUMBER_EVENT:
                             case RT_NUMBER_EXTENDED_EVENT:
                                 *this->display_data[this->cursor_pos].number->number = this->number_temp;
-                                this->blink_active = false;
-                                this->blink_status = false;
+                                break;
                             case RT_LIST:
                             case RT_LIST_EVENT:
                             case RT_LIST_EXTENDED_EVENT:
                                 *this->display_data[this->cursor_pos].list->element = this->list_pos_temp;
-                                this->blink_active = false;
-                                this->blink_status = false;
+                                break;
+                                
                         }
                         switch(this->display_data[this->cursor_pos].type)
                         {  
@@ -188,6 +188,7 @@ void DisplayMenu::action(eMenuAction action, bool active)
                             case RT_NUMBER_EXTENDED_EVENT:
                             case RT_LIST_EXTENDED_EVENT:
                                 this->display_data[this->cursor_pos].event(this->cursor_pos);
+                                break;
                         }
                         break;
                 }

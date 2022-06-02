@@ -133,8 +133,6 @@ void loop()
 		}
 	}
 
-	unsigned long t = millis();
 	menu.action(action, true);
-	if(action != MA_NONE) Serial.println(millis()-t);
 	action = MA_NONE;
 }
