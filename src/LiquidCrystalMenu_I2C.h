@@ -100,10 +100,12 @@ class DisplayMenu
                         sRowData* display_data, // Array where each element represents a row in the menu, in order
                         byte data_size); // Size (number of rows) of the menu
         void begin(void); // Must be called once at the beginning of the program
-        void action(eMenuAction action, bool active); // Sets changes in the menu with the given action. Shown data is not updated
+        void action(eMenuAction action); // Sets changes in the menu with the given action
         void update_row(byte pos);
         void update_value(byte pos);
         void update_extended(byte pos);
+        void reset_position();
+        void update_rows();
     private:
         enum eDisplayStatus
         {
@@ -129,7 +131,6 @@ class DisplayMenu
         bool show_value;
         bool temporal_value;
 
-        void _update_rows();
         void _update_cursor();
         void _update_value(byte pos);
         void _update_extended(byte pos);

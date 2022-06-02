@@ -1,11 +1,6 @@
 #include <Arduino.h>
 #include <LiquidCrystalMenu_I2C.h>
 
-// remove refresh method
-// Add multiple line option
-
-#define ROWS 10
-
 // eRowType = RT_NUMBER
 float number1 = 0;
 sNumber s_number1 = {&number1, "ml/h", 1, 0.5, 80, 1};
@@ -18,7 +13,7 @@ sList s_list1 = {list1, 2, &pos_list1};
 // eRowType = RT_EVENT
 void event(byte data_pos)
 {
-	Serial.println("This is a simple event of an 'RT_EVENT'");
+	Serial.println("This is an event execution of a 'RT_EVENT'");
 }
 
 // eRowType = RT_SHOW_NUMBER
@@ -92,7 +87,7 @@ void extended_event_list4(byte data_pos)
 
 // Menu
 // {eRowType type, const char* start_text, sNumber* number, sList* list, void (*event)(void), sExtended* extended}
-sRowData MenuData[ROWS] = {	{RT_NONE, "-------Title-------", nullptr, nullptr, nullptr, nullptr},
+sRowData MenuData[10] = {	{RT_NONE, "-------Title-------", nullptr, nullptr, nullptr, nullptr},
 							{RT_NUMBER, "Number 1: ", &s_number1, nullptr, nullptr, nullptr},
 							{RT_LIST, "List 1: ", nullptr, &s_list1, nullptr, nullptr},
 							{RT_EVENT, "Execute event", nullptr, nullptr, event, nullptr},
@@ -103,7 +98,7 @@ sRowData MenuData[ROWS] = {	{RT_NONE, "-------Title-------", nullptr, nullptr, n
 							{RT_NUMBER_EXTENDED_EVENT, "Nr 4: ", &s_number4, nullptr, event_number4, &s_extended_number4},
 							{RT_LIST_EXTENDED_EVENT, "List 4: ", nullptr, &s_list4, event_list4, &s_extended_list4}};
 
-DisplayMenu menu(0x27, 20, 4, MenuData, ROWS);
+DisplayMenu menu(0x27, 20, 4, MenuData, 10);
 
 
 void setup()
@@ -111,6 +106,7 @@ void setup()
 	Serial.begin(115200);
 
 	menu.begin();
+	menu.update_rows();
 }
 
 void loop()
@@ -141,6 +137,6 @@ void loop()
 		}
 	}
 
-	menu.action(action, true);
+	menu.action(action);
 	action = MA_NONE;
 }
