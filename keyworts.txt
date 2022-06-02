@@ -1,12 +1,26 @@
 # Syntax Coloring Map For RotaryEncoder
 
 # Datatypes, Classes (KEYWORD1)
-RotaryEncoder KEYWORD1
+DisplayMenu KEYWORD1
 
 # Methods and Functions (KEYWORD2)
-check KEYWORD2
-clk_isr KEYWORD2
+begin KEYWORD2
+action KEYWORD2
+update_row KEYWORD2
+update_value KEYWORD2
+update_extended KEYWORD2
+_update_rows KEYWORD2
+_update_cursor KEYWORD2
+_update_value KEYWORD2
+_update_extended KEYWORD2
+_clean_row KEYWORD2
 
 # Structures (KEYWORD2)
+eMenuAction KEYWORD2
+eRowType KEYWORD2
+sNumber KEYWORD2
+sList KEYWORD2
+sExtended KEYWORD2
+sRowData KEYWORD2
 
 # Constants (LITERAL1)
