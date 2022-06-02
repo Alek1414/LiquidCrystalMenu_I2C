@@ -10,8 +10,7 @@ DisplayMenu::DisplayMenu(byte address, byte max_characters, byte max_rows, sRowD
     this->display_data = display_data;
     this->data_size = data_size;
 
-    if(display_data[0].type == RT_NONE) this->cursor_pos = 1;
-    else this->cursor_pos = 0;
+    this->cursor_pos = 0;
     this->rows_pos = 0;
 
     this->display_status = BROWSE;
@@ -43,7 +42,7 @@ void DisplayMenu::action(eMenuAction action, bool active)
                 switch(this->display_status)
                 {
                     case BROWSE:
-                        if((this->cursor_pos == 1 && display_data[0].type == RT_NONE) || this->cursor_pos == 0)
+                        if(this->cursor_pos == 0)
                         {
                             this->cursor_pos = this->data_size - 1;
                             if(this->data_size > this->max_rows)
@@ -58,8 +57,7 @@ void DisplayMenu::action(eMenuAction action, bool active)
                             this->cursor_pos--;
                             if(this->rows_pos - this->cursor_pos == 1)
                             {
-                                if(this->cursor_pos == 1 && display_data[0].type == RT_NONE) this->rows_pos = 0;
-                                else this->rows_pos--;
+                                this->rows_pos--;
                                 this->_update_rows();
                             }
                             else this->_update_cursor();
@@ -95,8 +93,7 @@ void DisplayMenu::action(eMenuAction action, bool active)
                     case BROWSE:
                         if(this->cursor_pos == this->data_size - 1)
                         {
-                            if(display_data[0].type == RT_NONE) this->cursor_pos = 1;
-                            else this->cursor_pos = 0;
+                            this->cursor_pos = 0;
                             this->rows_pos = 0;
                             this->_update_cursor();
                             if(this->data_size > this->max_rows)
