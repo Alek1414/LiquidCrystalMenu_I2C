@@ -129,8 +129,6 @@ class DisplayMenu
         bool show_value;
         bool temporal_value;
 
-        bool update_value_flag;
-
         void _update_rows();
         void _update_cursor();
         void _update_value(byte pos);

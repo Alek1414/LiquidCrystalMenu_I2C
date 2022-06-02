@@ -20,8 +20,6 @@ DisplayMenu::DisplayMenu(byte address, byte max_characters, byte max_rows, sRowD
     this->blink_last = 0;
     this->show_value = true;
     this->show_last = 0;
-
-    this->update_value_flag = false;
 }
 
 void DisplayMenu::begin(void)
@@ -68,7 +66,6 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         }
                         break;
                     case EDIT:
-                        this->update_value_flag = true;
                         switch(this->display_data[this->cursor_pos].type)
                         {
                             case RT_NUMBER:
@@ -87,6 +84,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
                                     this->list_pos_temp++;
                                 break;
                         }
+                        _update_value(this->cursor_pos);
+                    _clean_row(this->cursor_pos);
                         break;
                 }
                 break;
@@ -115,7 +114,6 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         }
                         break;
                     case EDIT:
-                        this->update_value_flag = true;
                         switch(this->display_data[this->cursor_pos].type)
                         {
                             case RT_NUMBER:
@@ -134,6 +132,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
                                     this->list_pos_temp--;
                                 break;
                         }
+                        _update_value(this->cursor_pos);
+                        _clean_row(this->cursor_pos);
                         break;
                 }
                 break;
@@ -164,7 +164,6 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         break;
                     case EDIT:
                         this->display_status = BROWSE;
-                        this->update_value_flag = true;
                         this->blink_active = false;
                         this->blink_status = false;
                         switch(this->display_data[this->cursor_pos].type)
@@ -190,6 +189,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
                                 this->display_data[this->cursor_pos].event(this->cursor_pos);
                                 break;
                         }
+                        _update_value(this->cursor_pos);
+                        _clean_row(this->cursor_pos);
                         break;
                 }
                 break;
@@ -215,7 +216,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
             {
                 this->blink_last = millis();
                 this->blink_status = !this->blink_status;
-                this->update_value_flag = true;
+                _update_value(this->cursor_pos);
+                _clean_row(this->cursor_pos);
             }
         }
 
@@ -228,22 +230,11 @@ void DisplayMenu::action(eMenuAction action, bool active)
                 {
                     if(this->display_data[i].event != 0)
                         this->display_data[i].event(this->cursor_pos);
-                    update_value(i);
+                    _update_value(i);
                     _clean_row(i);
                 }
             }
         }
-
-        if(this->update_value_flag)
-        {
-            this->show_value = !this->blink_active || this->blink_status;
-            this->temporal_value = true;
-            update_value(this->cursor_pos);
-            _clean_row(this->cursor_pos);
-            this->show_value = true;
-            this->temporal_value = false;
-        }
-        this->update_value_flag = false;
     }
 }
 
@@ -297,6 +288,18 @@ void DisplayMenu::_update_value(byte pos_data)
     String value = "";
     int i;
     byte erase_lenght;
+
+    if(pos_data == this->cursor_pos)
+    {
+        this->show_value = !this->blink_active || this->blink_status;
+        if(this->display_status == EDIT) this->temporal_value = true;
+        else this->temporal_value = false;
+    }
+    else
+    {
+        this->show_value = true;
+        this->temporal_value = false;
+    }
 
     byte start_lenght = strlen(this->display_data[pos_data].start_text);
     (*this->lcd).setCursor(start_lenght+1, pos_data - this->rows_pos);
