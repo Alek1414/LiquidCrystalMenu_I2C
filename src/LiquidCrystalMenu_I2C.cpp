@@ -82,8 +82,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
                                     this->list_pos_temp++;
                                 break;
                         }
-                        _update_value(this->cursor_pos);
-                    _clean_row(this->cursor_pos);
+                        this->_update_value(this->cursor_pos);
+                        this->_clean_row(this->cursor_pos);
                         break;
                 }
                 break;
@@ -129,8 +129,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
                                     this->list_pos_temp--;
                                 break;
                         }
-                        _update_value(this->cursor_pos);
-                        _clean_row(this->cursor_pos);
+                        this->_update_value(this->cursor_pos);
+                        this->_clean_row(this->cursor_pos);
                         break;
                 }
                 break;
@@ -186,8 +186,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
                                 this->display_data[this->cursor_pos].event(this->cursor_pos);
                                 break;
                         }
-                        _update_value(this->cursor_pos);
-                        _clean_row(this->cursor_pos);
+                        this->_update_value(this->cursor_pos);
+                        this->_clean_row(this->cursor_pos);
                         break;
                 }
                 break;
@@ -199,8 +199,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
                         case RT_NUMBER_EXTENDED_EVENT:
                         case RT_LIST_EXTENDED_EVENT:
                             *this->display_data[this->cursor_pos].extended->status = !*this->display_data[this->cursor_pos].extended->status;
-                            update_extended(this->cursor_pos);
-                            _clean_row(this->cursor_pos);
+                            this->_update_extended(this->cursor_pos);
+                            this->_clean_row(this->cursor_pos);
                             this->display_data[this->cursor_pos].extended->event(this->cursor_pos);
                             break;
                     }
@@ -213,8 +213,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
             {
                 this->blink_last = millis();
                 this->blink_status = !this->blink_status;
-                _update_value(this->cursor_pos);
-                _clean_row(this->cursor_pos);
+                this->_update_value(this->cursor_pos);
+                this->_clean_row(this->cursor_pos);
             }
         }
 
@@ -227,8 +227,8 @@ void DisplayMenu::action(eMenuAction action, bool active)
                 {
                     if(this->display_data[i].event != 0)
                         this->display_data[i].event(this->cursor_pos);
-                    _update_value(i);
-                    _clean_row(i);
+                    this->_update_value(i);
+                    this->_clean_row(i);
                 }
             }
         }
@@ -274,9 +274,9 @@ void DisplayMenu::update_row(byte pos_data)
     {
         (*this->lcd).setCursor(1, pos_data - this->rows_pos);
         (*this->lcd).print(this->display_data[pos_data].start_text);
-        update_value(pos_data);
-        update_extended(pos_data);
-        _clean_row(pos_data);
+        this->_update_value(pos_data);
+        this->_update_extended(pos_data);
+        this->_clean_row(pos_data);
     }
 }
 
